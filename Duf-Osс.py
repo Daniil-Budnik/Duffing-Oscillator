@@ -1,13 +1,15 @@
 # Этот код имитирует осциллятор затухания:
 # Осциллятор с затухающими гармониками в двухъямном потенциале.
+
 # F = -gamma*dx/dt + 2*a*x - 4*b*x^3 + F_0*cos(omega*t)
+
 # Нелинейное дифференциальное уравнение второго порядка, решенное численно с помощью разложения Тейлора.
 
 # Для текущего набора параметров движение хаотическое, т.е.
 # движение сильно зависит от начальных условий. 
 # Дополнительно фиксированного периода движения не наблюдается. Сюжет Пуанкаре - фрактал.
 
-import numpy as np
+from numpy import * 
 from matplotlib.pyplot import * 
 
 # -------------Коэффициенты---------------------
@@ -20,8 +22,9 @@ T = 1000
 
 # Для хаоса а = 0.5 и b = 0.0625
 # Для простого случая а = 0 и b = 1
-a = 1	# 0.5
-b = 1 	#0.0625
+
+a = 1	
+b = 1 	
 
 F_0 = 2.5
 
@@ -31,8 +34,10 @@ gamma = 0.1
 # ------------------------------------------
 
 h = 1e-1 # Шаг времени
-period = 2*np.pi/(1.0*omega)
-t = np.arange(0,T,h)
+
+period = 2*pi/(1.0*omega)
+t = arange(0,T,h)
+
 
 def x_2(x,v):
     return -gamma*v + 2.0*a*x - 4.0*b*x*x*x
@@ -47,20 +52,19 @@ def x_5(x4,x3,x2,x,v):
     return -gamma*x4 + 2*a*x3 -12.0*b*(x*x*x3 + 2.0*x2*x*v) -24.0*b*(v*v*v+2*x*v*x2)
 
 # Тригонометрические члены в производных. Оценить перед циклом
-x2F = F_0*np.cos(omega*t)
-x3F = -F_0*omega*np.sin(omega*t)
-x4F = -F_0*omega*omega*np.cos(omega*t)
-x5F = F_0*omega*omega*omega*np.sin(omega*t)
+x2F = F_0*cos(omega*t)
+x3F = -F_0*omega*sin(omega*t)
+x4F = -F_0*omega*omega*cos(omega*t)
+x5F = F_0*omega*omega*omega*sin(omega*t)
 
 # Коэффициенты перед разложением в ряд Тейлора
-# Оценить перед циклом
 coef1 = 0.5*h**2.0
 coef2 = 1.0/6.0*h**3.0
 coef3 = 1.0/24.0*h**4.0
 coef4 = 1.0/120.0*h**5.0
 
 
-position, velocity = np.zeros(len(t)) , np.zeros(len(t))
+position, velocity = zeros(len(t)) , zeros(len(t))
 position[0] = x
 
 for i in range(1,len(t)):
@@ -78,7 +82,7 @@ for i in range(1,len(t)):
 
 
 # Получите точки фазового пространства в целых кратных периодах для графика Пуанкаре
-strange_attractor = np.zeros([int(T/period),2])
+strange_attractor = zeros([int(T/period),2])
 k = 1
 
 for i in range(len(t)):
