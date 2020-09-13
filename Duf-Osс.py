@@ -1,3 +1,4 @@
+
 # Этот код имитирует осциллятор затухания:
 # Осциллятор с затухающими гармониками в двухъямном потенциале.
 
@@ -15,7 +16,7 @@ from matplotlib.pyplot import *
 # -------------Коэффициенты---------------------
 
 # Первоначальные условия
-x,v = 0.5, 0
+x,v = 0.5, 0 
 
 # Продолжительность моделирования
 T = 1000
@@ -23,39 +24,38 @@ T = 1000
 # Для хаоса а = 0.5 и b = 0.0625
 # Для простого случая а = 0 и b = 1
 
-a = 1	
-b = 1 	
-
+a, b = 1, 1		
 F_0 = 2.5
 
-omega = 2.0
-gamma = 0.1
+Omega = 2.0
+Gamma = 0.1
+
+# Шаг времени
+h = 1e-1 
 
 # ------------------------------------------
 
-h = 1e-1 # Шаг времени
-
-period = 2*pi/(1.0*omega)
+Period = 2*pi/(1.0*Omega)
 t = arange(0,T,h)
 
 
 def x_2(x,v):
-    return -gamma*v + 2.0*a*x - 4.0*b*x*x*x
+    return -Gamma*v + 2.0*a*x - 4.0*b*x*x*x
 
 def x_3(x2,x,v):
-    return -gamma*x2 + 2.0*a*v -12.0*b*x*x*v
+    return -Gamma*x2 + 2.0*a*v -12.0*b*x*x*v
 
 def x_4(x3,x2,x,v):
-    return -gamma*x3 + 2.0*a*x2 -12.0*b*x*x*x2 - 24.0*b*v*v*x
+    return -Gamma*x3 + 2.0*a*x2 -12.0*b*x*x*x2 - 24.0*b*v*v*x
 
 def x_5(x4,x3,x2,x,v):
-    return -gamma*x4 + 2*a*x3 -12.0*b*(x*x*x3 + 2.0*x2*x*v) -24.0*b*(v*v*v+2*x*v*x2)
+    return -Gamma*x4 + 2*a*x3 -12.0*b*(x*x*x3 + 2.0*x2*x*v) -24.0*b*(v*v*v+2*x*v*x2)
 
 # Тригонометрические члены в производных. Оценить перед циклом
-x2F = F_0*cos(omega*t)
-x3F = -F_0*omega*sin(omega*t)
-x4F = -F_0*omega*omega*cos(omega*t)
-x5F = F_0*omega*omega*omega*sin(omega*t)
+x2F = F_0*cos(Omega*t)
+x3F = -F_0*Omega*sin(Omega*t)
+x4F = -F_0*Omega*Omega*cos(Omega*t)
+x5F = F_0*Omega*Omega*Omega*sin(Omega*t)
 
 # Коэффициенты перед разложением в ряд Тейлора
 coef1 = 0.5*h**2.0
@@ -63,9 +63,12 @@ coef2 = 1.0/6.0*h**3.0
 coef3 = 1.0/24.0*h**4.0
 coef4 = 1.0/120.0*h**5.0
 
+# ------------------------------------------
 
-position, velocity = zeros(len(t)) , zeros(len(t))
-position[0] = x
+Position, Velocity = zeros(len(t)) , zeros(len(t))
+Position[0] = x
+
+# ------------------------------------------
 
 for i in range(1,len(t)):
 
@@ -78,33 +81,40 @@ for i in range(1,len(t)):
     x += v*h + coef1*d2 + coef2*d3 + coef3*d4 + coef4*d5
     v += d2*h + coef1*d3 + coef2*d4 + coef3*d5
 	
-    position[i], velocity[i] = x , v
+    Position[i], Velocity[i] = x , v
 
 
 # Получите точки фазового пространства в целых кратных периодах для графика Пуанкаре
-strange_attractor = zeros([int(T/period),2])
+Strange_Attractor = zeros([int(T/Period),2])
 k = 1
 
+# ------------------------------------------
+
 for i in range(len(t)):
-    if abs(t[i]-k*period)<h:
-        strange_attractor[k-1,0] = position[i]
-        strange_attractor[k-1,1] = velocity[i]
+    if abs(t[i]-k*Period)<h:
+        Strange_Attractor[k-1,0] = Position[i]
+        Strange_Attractor[k-1,1] = Velocity[i]
         k+=1
 
+# ------------------------------------------
 
 subplot(3,1,1)
-plot(t[-3000:],position[-3000:],'g-')
+plot(t[-3000:],Position[-3000:],'g-')
 title('Траектория осциллятора')
 ylabel('Позиция')
 
+# ------------------------------------------
+
 subplot(3,1,2)
-plot(position[-3000:],velocity[-3000:],'r-')
+plot(Position[-3000:],Velocity[-3000:],'r-')
 title('Фазовое пространство')
 xlim([-4.5,4.5])
 ylabel('Момент')
 
+# ------------------------------------------
+
 subplot(3,1,3)
-scatter(strange_attractor[:,0],strange_attractor[:,1])
+scatter(Strange_Attractor[:,0],Strange_Attractor[:,1])
 xlabel('Позиция')
 ylabel('Момент')
 title(r'График Пуанкаре (Фазовое пространство во времени = $\frac{2\pi N}{\omega}$, N = 1,2,3...)')
