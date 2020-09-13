@@ -15,4 +15,9 @@ F = -Gamma * ( dx / dt ) + 2 * a * x - 4 * b * ( x ^ 3 ) + F_0 * cos( Omega * t 
 Для текущего набора параметров движение хаотическое, т.е. движение сильно зависит от начальных условий. 
 Дополнительно фиксированного периода движения не наблюдается. Сюжет Пуанкаре - фрактал.
 
+Пример работы программы с стадартными параметрами
 ![alt tag](https://github.com/PC-SET/Duffing-Oscillator/blob/master/Example.png?raw=true "Пример")​
+
+Пример работы программы с хаотическим поведением
+![alt tag](https://github.com/PC-SET/Duffing-Oscillator/blob/master/Example2.png?raw=true "Пример")​
+
